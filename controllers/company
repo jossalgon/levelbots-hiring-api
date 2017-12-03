@@ -3,6 +3,12 @@ var MongoClient = Mongo.MongoClient;
 var url = "mongodb://localhost:27017/hiring";
 
 
+var safeCreateMongoObjectID = function(idToCreate) {
+  var checkForHexRegExp = new RegExp("^[0-9a-fA-F]{24}$");
+  if (checkForHexRegExp.test(idToCreate)) return new Mongo.ObjectID(idToCreate);
+};
+
+
 var mongoFind = function(criteria, projection, callback) {
   MongoClient.connect(url, function(err, db) {
     if (err) throw err;
@@ -12,7 +18,7 @@ var mongoFind = function(criteria, projection, callback) {
       db.close();
     });
   });
-}
+};
 
 var mongoDelete = function(criteria, callback) {
   MongoClient.connect(url, function(err, db) {
@@ -23,7 +29,7 @@ var mongoDelete = function(criteria, callback) {
       db.close();
     });
   });
-}
+};
 
 
 var getAllCompanies = function(request, response) {
@@ -34,78 +40,90 @@ var getAllCompanies = function(request, response) {
 
 
 var getCompanyById = function(request, response) {
-  var companyId = new Mongo.ObjectID(request.params.id);
-
-  mongoFind({"_id": companyId}, {}, function(err, result) {
-    if (result[0]) {
-      response.json(result[0]);
-    } else {
-      response.sendStatus(404);
-    }
-  });
+  var companyId = safeCreateMongoObjectID(request.params.id);
+  if (companyId) {
+    mongoFind({"_id": companyId}, {}, function(err, result) {
+      if (result[0]) {
+        response.json(result[0]);
+      } else {
+        response.sendStatus(404);
+      }
+    });
+  } else {
+    response.sendStatus(400);
+  }
 };
 
 
 var getProductsByCompanyId = function(request, response) {
-  var companyId = new Mongo.ObjectID(request.params.id);
-
-  mongoFind({"_id": companyId}, {"products.name": 1}, function(err, result) {
-    if (result[0]) {
-      response.json(result[0].products);
-    } else {
-      response.sendStatus(404);
-    }
-  });
+  var companyId = safeCreateMongoObjectID(request.params.id);
+  if (companyId) {
+    mongoFind({"_id": companyId}, {"products.name": 1}, function(err, result) {
+      if (result[0]) {
+        response.json(result[0].products);
+      } else {
+        response.sendStatus(404);
+      }
+    });
+  } else {
+    response.sendStatus(400);
+  }
 };
 
 
 var getMembersByCompanyId = function(request, response) {
-  var companyId = new Mongo.ObjectID(request.params.id);
-
-  MongoClient.connect(url, function(err, db) {
-    if (err) throw err;
-
-    db.collection("companies").aggregate(
-      [
-        {$match: {_id: companyId}},
-        {$unwind: "$relationships" },
-        {$group: {
-          _id: {is_past: "$relationships.is_past"},
-          relationships: {
-            $push: {
-              title: "$relationships.title",
-              person: {
-                first_name: "$relationships.person.first_name",
-                last_name: "$relationships.person.last_name",
+  var companyId = safeCreateMongoObjectID(request.params.id);
+  if (companyId) {
+    MongoClient.connect(url, function(err, db) {
+      if (err) throw err;
+      db.collection("companies").aggregate(
+        [
+          {$match: {_id: companyId}},
+          {$unwind: "$relationships" },
+          {$group: {
+            _id: {is_past: "$relationships.is_past"},
+            relationships: {
+              $push: {
+                title: "$relationships.title",
+                person: {
+                  first_name: "$relationships.person.first_name",
+                  last_name: "$relationships.person.last_name",
+                }
               }
             }
-          }
-        }},
-        {$match: { "_id.is_past": false}}
-      ]
-    ).toArray(function(err, result) {
-      if (err) throw err;
-      if (result[0]) {
-        response.json(result[0].relationships);
-      } else {
-        response.sendStatus(404);
-      }
-      db.close();
+          }},
+          {$match: { "_id.is_past": false}}
+        ]
+      ).toArray(function(err, result) {
+        if (err) throw err;
+        if (result[0]) {
+          response.json(result[0].relationships);
+        } else {
+          response.sendStatus(404);
+        }
+        db.close();
+      });
     });
-  });
+  } else {
+    response.sendStatus(400);
+  }
 };
 
 
-var deleteCompanyById = function(request, response){
-  var companyId = new Mongo.ObjectID(request.params.id);
-  mongoDelete({"_id": companyId}, function(err, result) {
-    if (result.deletedCount == 1) {
-      response.sendStatus(200);
-    } else {
-      response.sendStatus(404);
-    }
-  })
-}
+var deleteCompanyById = function(request, response) {
+  var companyId = safeCreateMongoObjectID(request.params.id);
+  if (companyId) {
+    mongoDelete({"_id": companyId}, function(err, result) {
+      if (result.deletedCount == 1) {
+        response.sendStatus(200);
+      } else {
+        response.sendStatus(404);
+      }
+    });
+  } else {
+    response.sendStatus(400);
+  }
+};
 
 
 module.exports = {
