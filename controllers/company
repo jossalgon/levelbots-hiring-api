@@ -1,0 +1,92 @@
+var Mongo = require('mongodb');
+var MongoClient = Mongo.MongoClient;
+var url = "mongodb://localhost:27017/hiring";
+
+
+var mongoFind = function(criteria, projection, callback) {
+  MongoClient.connect(url, function(err, db) {
+    if (err) throw err;
+    db.collection("companies").find(criteria, projection).toArray(function(err, result) {
+      if (err) throw err;
+      callback(err, result);
+      db.close();
+    });
+  });
+}
+
+
+var getAllCompanies = function(request, response) {
+  mongoFind({}, {"name": 1, "homepage_url": 1}, function(err, result) {
+    response.json(result);
+  });
+};
+
+
+var getCompanyById = function(request, response) {
+  var companyId = new Mongo.ObjectID(request.params.id);
+
+  mongoFind({"_id": companyId}, {}, function(err, result) {
+    if (result[0]) {
+      response.json(result[0]);
+    } else {
+      response.status(404).json("No company found.")
+    }
+  });
+};
+
+
+var getProductsByCompanyId = function(request, response) {
+  var companyId = new Mongo.ObjectID(request.params.id);
+
+  mongoFind({"_id": companyId}, {"products.name": 1}, function(err, result) {
+    if (result[0]) {
+      response.json(result[0].products);
+    } else {
+      response.status(404).json("No products found.")
+    }
+  });
+};
+
+
+var getMembersByCompanyId = function(request, response) {
+  var companyId = new Mongo.ObjectID(request.params.id);
+
+  MongoClient.connect(url, function(err, db) {
+    if (err) throw err;
+
+    db.collection("companies").aggregate(
+      [
+        {$match: {_id: companyId}},
+        {$unwind: "$relationships" },
+        {$group: {
+          _id: {is_past: "$relationships.is_past"},
+          relationships: {
+            $push: {
+              title: "$relationships.title",
+              person: {
+                first_name: "$relationships.person.first_name",
+                last_name: "$relationships.person.last_name",
+              }
+            }
+          }
+        }},
+        {$match: { "_id.is_past": false}}
+      ]
+    ).toArray(function(err, result) {
+      if (err) throw err;
+      if (result[0]) {
+        response.json(result[0].relationships);
+      } else {
+        response.status(404).json("No relationships found.")
+      }
+      db.close();
+    });
+  });
+};
+
+module.exports = {
+  getAllCompanies,
+  getCompanyById,
+  getProductsByCompanyId,
+  getMembersByCompanyId
+}

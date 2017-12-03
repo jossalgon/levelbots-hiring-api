@@ -32,6 +32,7 @@ var importCompanies = function() {
   request(json_url).pipe(jsonStream);
 
   jsonStream.on('finish', function(){
+    // TODO: Only import to mongo if json file didn't exist
     mongoImport(db, collection, jsonfilePath);
   });
 };
