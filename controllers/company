@@ -36,7 +36,6 @@ var mongoInsert = function(obj, callback) {
     if (err) throw err;
     obj._id = new Mongo.ObjectID(obj._id);
     db.collection("companies").insertOne(obj, function(err, result) {
-      if (err) throw err;
       callback(err, result);
       db.close();
     });
@@ -142,7 +141,11 @@ var createCompany = function(request, response) {
   if (safeCreateMongoObjectID(body._id) && body._id && body.products
         && body.relationships) {
     mongoInsert(body, function(err, result) {
-      response.sendStatus(200);
+      if (!err) {
+        response.sendStatus(200);
+      } else {
+        response.sendStatus(400);
+      }
     });
   } else {
     response.sendStatus(400);
