@@ -1,0 +1,23 @@
+{
+  "name": "levelbots-hiring-api",
+  "version": "0.0.0",
+  "description": "Prueba técnica Levelbots",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jossalgon/levelbots-hiring-api.git"
+  },
+  "author": "Jose Luis Salazar González",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jossalgon/levelbots-hiring-api/issues"
+  },
+  "homepage": "https://github.com/jossalgon/levelbots-hiring-api#readme",
+  "dependencies": {
+    "express": "^4.16.2",
+    "mongodb": "^2.2.33"
+  }
+}
