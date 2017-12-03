@@ -4,7 +4,8 @@ var router = express.Router();
 var companyController = require('../controllers/company');
 
 router.route('/:id')
-  .get(companyController.getCompanyById);
+  .get(companyController.getCompanyById)
+  .delete(companyController.deleteCompanyById);
 
 router.route('/:id/products')
   .get(companyController.getProductsByCompanyId);

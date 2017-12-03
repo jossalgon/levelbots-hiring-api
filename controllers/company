@@ -14,6 +14,17 @@ var mongoFind = function(criteria, projection, callback) {
   });
 }
 
+var mongoDelete = function(criteria, callback) {
+  MongoClient.connect(url, function(err, db) {
+    if (err) throw err;
+    db.collection("companies").deleteOne(criteria, function(err, result) {
+      if (err) throw err;
+      callback(err, result);
+      db.close();
+    });
+  });
+}
+
 
 var getAllCompanies = function(request, response) {
   mongoFind({}, {"name": 1, "homepage_url": 1}, function(err, result) {
@@ -84,9 +95,23 @@ var getMembersByCompanyId = function(request, response) {
   });
 };
 
+
+var deleteCompanyById = function(request, response){
+  var companyId = new Mongo.ObjectID(request.params.id);
+  mongoDelete({"_id": companyId}, function(err, result) {
+    if (result.deletedCount == 1) {
+      response.sendStatus(200);
+    } else {
+      response.sendStatus(404);
+    }
+  })
+}
+
+
 module.exports = {
   getAllCompanies,
   getCompanyById,
   getProductsByCompanyId,
-  getMembersByCompanyId
+  getMembersByCompanyId,
+  deleteCompanyById
 }
