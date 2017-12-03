@@ -1,6 +1,6 @@
 {
   "name": "levelbots-hiring-api",
-  "version": "0.2.0",
+  "version": "0.4.0",
   "description": "Prueba técnica Levelbots",
   "main": "app.js",
   "scripts": {
@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/jossalgon/levelbots-hiring-api#readme",
   "dependencies": {
+    "body-parser": "^1.18.2",
     "express": "^4.16.2",
     "mongodb": "^2.2.33"
   }
