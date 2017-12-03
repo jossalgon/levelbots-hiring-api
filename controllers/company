@@ -40,7 +40,7 @@ var getCompanyById = function(request, response) {
     if (result[0]) {
       response.json(result[0]);
     } else {
-      response.status(404).json("No company found.")
+      response.sendStatus(404);
     }
   });
 };
@@ -53,7 +53,7 @@ var getProductsByCompanyId = function(request, response) {
     if (result[0]) {
       response.json(result[0].products);
     } else {
-      response.status(404).json("No products found.")
+      response.sendStatus(404);
     }
   });
 };
@@ -88,7 +88,7 @@ var getMembersByCompanyId = function(request, response) {
       if (result[0]) {
         response.json(result[0].relationships);
       } else {
-        response.status(404).json("No relationships found.")
+        response.sendStatus(404);
       }
       db.close();
     });
