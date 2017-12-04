@@ -168,7 +168,7 @@ var createCompany = function(request, response) {
 
 var updateCompanyById = function(request, response) {
   var companyId = safeCreateMongoObjectID(request.params.id);
-  if (companyId && !request.body._id) {
+  if (companyId && !Array.isArray(request.body) && !request.body._id) {
     mongoUpdate({"_id": companyId}, request.body, function(err, result) {
       if (result.modifiedCount == 1) {
         response.sendStatus(200);
@@ -184,7 +184,7 @@ var updateCompanyById = function(request, response) {
 
 var addProductToCompanyById = function(request, response) {
   var companyId = safeCreateMongoObjectID(request.params.id);
-  if (companyId && Object.keys(request.body).length > 0) {
+  if (companyId && !Array.isArray(request.body) && Object.keys(request.body).length > 0) {
     mongoUpdate({"_id": companyId}, {"$addToSet": {"products": request.body}},
      function(err, result) {
       if (result.modifiedCount == 1) {
