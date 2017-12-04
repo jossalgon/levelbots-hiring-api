@@ -1,5 +1,5 @@
-var mongoose = require('mongoose'),
-    crypto = require('crypto');
+var mongoose = require('mongoose')
+  , crypto = require('crypto');
 
 var oauthUserSchema = new mongoose.Schema({
   email: { type: String, unique: true, required: true, lowercase: true },

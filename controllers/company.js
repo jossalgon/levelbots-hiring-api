@@ -1,6 +1,6 @@
-var Mongo = require('mongodb');
-var MongoClient = Mongo.MongoClient;
-var url = process.env.MONGODB_URI || "mongodb://localhost:27017/hiring";
+var Mongo = require('mongodb')
+  , MongoClient = Mongo.MongoClient
+  , url = process.env.MONGODB_URI || "mongodb://localhost:27017/hiring";
 
 
 var safeCreateMongoObjectID = function(idToCreate) {

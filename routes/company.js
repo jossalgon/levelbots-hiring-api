@@ -1,7 +1,8 @@
-var express = require('express');
-var router = express.Router();
-var bodyParser = require('body-parser');
-var jsonParser = bodyParser.json({ type: 'application/json'});
+var express = require('express')
+  , router = express.Router();
+
+var bodyParser = require('body-parser')
+  , jsonParser = bodyParser.json({ type: 'application/json'});
 
 var companyController = require('../controllers/company');
 

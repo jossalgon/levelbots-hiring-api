@@ -1,5 +1,5 @@
-var mongoose = require('mongoose');
-var OAuthUser = require('../models/oauthUser');
+var mongoose = require('mongoose')
+  , OAuthUser = require('../models/oauthUser');
 
 var url = process.env.MONGODB_URI || "mongodb://localhost:27017/hiring";
 mongoose.connect(url);
