@@ -9,11 +9,9 @@ importCompanies();
 
 // Routes
 var company = require('./routes/company');
-app.use('/company', company);
+app.use('/api/company', company);
 
-app.route('/companies')
+app.route('/api/companies')
   .get(companyController.getAllCompanies);
 
-
-// App listen
-app.listen(3000);
+module.exports = app;
