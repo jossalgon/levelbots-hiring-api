@@ -19,5 +19,8 @@ router.route('/:id/products')
 router.route('/:id/members')
   .get(companyController.getMembersByCompanyId);
 
+router.route('/:id/producto')
+  .post(jsonParser, companyController.addProductToCompanyById);
+
 
 module.exports = router;

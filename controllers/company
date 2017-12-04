@@ -182,6 +182,23 @@ var updateCompanyById = function(request, response) {
 };
 
 
+var addProductToCompanyById = function(request, response) {
+  var companyId = safeCreateMongoObjectID(request.params.id);
+  if (companyId) {
+    mongoUpdate({"_id": companyId}, {"$addToSet": {"products": request.body}},
+     function(err, result) {
+      if (result.modifiedCount == 1) {
+        response.sendStatus(200);
+      } else {
+        response.sendStatus(404);
+      }
+    });
+  } else {
+    response.sendStatus(400);
+  }
+};
+
+
 module.exports = {
   getAllCompanies,
   getCompanyById,
@@ -189,5 +206,6 @@ module.exports = {
   getMembersByCompanyId,
   deleteCompanyById,
   createCompany,
-  updateCompanyById
+  updateCompanyById,
+  addProductToCompanyById
 }
