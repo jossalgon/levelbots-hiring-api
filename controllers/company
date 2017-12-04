@@ -184,7 +184,7 @@ var updateCompanyById = function(request, response) {
 
 var addProductToCompanyById = function(request, response) {
   var companyId = safeCreateMongoObjectID(request.params.id);
-  if (companyId) {
+  if (companyId && Object.keys(request.body).length > 0) {
     mongoUpdate({"_id": companyId}, {"$addToSet": {"products": request.body}},
      function(err, result) {
       if (result.modifiedCount == 1) {
