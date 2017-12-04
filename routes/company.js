@@ -10,7 +10,8 @@ router.route('/')
 
 router.route('/:id')
   .get(companyController.getCompanyById)
-  .delete(companyController.deleteCompanyById);
+  .delete(companyController.deleteCompanyById)
+  .put(jsonParser, companyController.updateCompanyById);
 
 router.route('/:id/products')
   .get(companyController.getProductsByCompanyId);
