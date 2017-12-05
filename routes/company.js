@@ -4,6 +4,8 @@ var express = require('express')
 var bodyParser = require('body-parser')
   , jsonParser = bodyParser.json({ type: 'application/json'});
 
+var oauth = require('../middlewares/oauthUser');
+
 var companyController = require('../controllers/company');
 
 router.route('/')
