@@ -16,4 +16,11 @@ app.use('/oauth', oauthUser);
 app.route('/api/companies')
   .get(oauth, companyController.getAllCompanies);
 
+app.route('/')
+  .get(function(request, response) {
+    response.send("Check routes at "+
+      "<a href='https://github.com/jossalgon/levelbots-hiring-api/blob/master/README.md'>"+
+      "https://github.com/jossalgon/levelbots-hiring-api/blob/master/README.md</a>");
+  });
+
 module.exports = app;
