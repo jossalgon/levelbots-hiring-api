@@ -13,12 +13,12 @@ var createOAuthUser = function(request, response) {
       password: body.password
   });
 
-  oauthUser.save(function(err) {
+  oauthUser.save(function(err, oauthUser) {
     if (err) {
-      console.log(err);
-      response.sendStatus(500);
+      response.status(400).send("Duplicate user or no password");
     } else {
-      response.sendStatus(200);
+      response.send("User created successfully, your token is: " +
+        oauthUser.accessToken);
     }
   });
 };

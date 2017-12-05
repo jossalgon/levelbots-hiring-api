@@ -6,6 +6,8 @@ var isAllowed = function(request, response, next) {
     oauthUserService.isValidAccessToken(accessToken, next, function(){
       response.sendStatus(401);
     });
+  } else {
+    response.sendStatus(401);
   }
 };
 
